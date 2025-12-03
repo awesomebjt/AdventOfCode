@@ -1,14 +1,15 @@
 import os,sys
 
 def invalid(id):
-    if len(id) % 2 != 0:
-        return 0
-    first = id[:int(len(id)/2)]
-    last  = id[int(len(id)/2):]
-    if int(first)==int(last):
-        return int(id)
-    else:
-        return 0
+    l = len(id)
+    for i in range(l-1,0,-1):
+        # i is a divisor. If length is 10, we go through
+        # chunk sizes from 5 to 1
+        chunks = [id[j:j+i] for j in range(0,l,i)]
+        if len(set(chunks)) == 1:
+            return True
+    return False
+
 
 if __name__ == "__main__":
     filename = sys.argv[1]
@@ -17,9 +18,9 @@ if __name__ == "__main__":
     invalid_ids = []
     invalid_tally = 0
     ranges = [(r.split('-')[0],r.split('-')[1]) for r in content.split(',')]
-
     for x,y in ranges:
-        for n in range(int(x),int(y)+1):
+        for n in range(int(x),int(y)+1,1):
             id_str = str(n)
-            invalid_tally += invalid(id_str)
+            if invalid(id_str):
+                invalid_tally += n
     print(invalid_tally)
